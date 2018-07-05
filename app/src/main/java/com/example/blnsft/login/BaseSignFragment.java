@@ -3,13 +3,14 @@ package com.example.blnsft.login;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
-import com.example.blnsft.MainActivity;
 import com.example.blnsft.R;
 import com.example.blnsft.models.UserData;
 
@@ -34,7 +34,6 @@ import butterknife.Unbinder;
  * A login screen that offers login via email/password.
  */
 public abstract class BaseSignFragment extends MvpAppCompatFragment implements TextView.OnEditorActionListener {
-    public final static String USER_DATA = "UserData";
 
     @BindView(R.id.email)
     AutoCompleteTextView mEmailView;
@@ -85,7 +84,7 @@ public abstract class BaseSignFragment extends MvpAppCompatFragment implements T
 
     public void authorizationOk(UserData userData) {
         authorizationEnd();
-        startMainActivity(userData);
+        finishAuthorization(userData);
     }
 
     public void authorizationIncorrectPassword() {
@@ -147,10 +146,10 @@ public abstract class BaseSignFragment extends MvpAppCompatFragment implements T
         return false;
     }
 
-    protected void startMainActivity(UserData userData){
-        Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.putExtra(USER_DATA, userData).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        getActivity().startActivity(intent);
+    protected void finishAuthorization(UserData userData){
+        Intent intent = new Intent();
+        intent.putExtra(UserData.USER_DATA, userData).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
 

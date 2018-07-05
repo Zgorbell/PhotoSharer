@@ -16,7 +16,7 @@
     <string name="repeat_password">Repeat password</string>
     <string name="action_sign_up">Sign up </string>
     <string name="password_not_match">Passwords do not match</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Login</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -24,4 +24,6 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="map">Map</string>
     <string name="photos">Photos</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="exit_item_string">Exit</string>
 </resources>
