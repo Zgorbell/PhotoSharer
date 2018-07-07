@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -47,7 +49,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //        MapsInitializer.initialize(getContext());
         this.googleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        if(checkLocationPermission()) googleMap.setMyLocationEnabled(true);
+        if (checkLocationPermission(getContext())) googleMap.setMyLocationEnabled(true);
 //        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 //        googleMap.addMarker(new MarkerOptions().position(locationManager.))
     }
@@ -58,10 +60,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onDestroy();
     }
 
-    private boolean checkLocationPermission(){
-        return ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED;
+    public static boolean checkLocationPermission(Context context) {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                                PackageManager.PERMISSION_GRANTED;
+
     }
+
+
 }

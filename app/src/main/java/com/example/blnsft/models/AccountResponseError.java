@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Arrays;
 
-public class AccountErrorResponse {
+public class AccountResponseError {
 
     private String status;
     private String error;

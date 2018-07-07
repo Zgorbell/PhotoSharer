@@ -4,7 +4,6 @@ public class AccountRequest {
     private String login;
     private String password;
 
-
     public AccountRequest(String login, String password) {
         this.login = login;
         this.password = password;

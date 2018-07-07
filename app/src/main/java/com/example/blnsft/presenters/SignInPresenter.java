@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.blnsft.models.AccountRequest;
-import com.example.blnsft.models.AccountResponse;
-import com.example.blnsft.models.AccountErrorResponse;
+import com.example.blnsft.models.AccountResponseOk;
+import com.example.blnsft.models.AccountResponseError;
 import com.example.blnsft.models.ValidError;
 import com.example.blnsft.retrofit.SignInApi;
 import com.example.blnsft.views.SignInView;
@@ -34,7 +34,7 @@ public class SignInPresenter extends MvpPresenter<SignInView>{
 
     public void checkSign(String login, String password) {
         SignInApi signInApi = buildRetrofit().create(SignInApi.class);
-        Call<AccountResponse> call = signInApi.signIn(new AccountRequest(login, password));
+        Call<AccountResponseOk> call = signInApi.signIn(new AccountRequest(login, password));
         call.enqueue(new AccountResponseCallback());
         if(call.isCanceled()) {
             getViewState().authorizationFail("TimeOut");
@@ -54,7 +54,7 @@ public class SignInPresenter extends MvpPresenter<SignInView>{
                 .readTimeout(2500, TimeUnit.MILLISECONDS)
                 .build();
     }
-    protected void checkError(AccountErrorResponse response) {
+    protected void checkError(AccountResponseError response) {
         if (response.getError().equals(PASSWORD_INCORRECT)) {
             getViewState().authorizationIncorrectPassword();
         } else if (response.getError().equals(VALIDATION_ERROR)) {
@@ -73,25 +73,25 @@ public class SignInPresenter extends MvpPresenter<SignInView>{
         }
     }
 
-    public class AccountResponseCallback implements Callback<AccountResponse> {
+    public class AccountResponseCallback implements Callback<AccountResponseOk> {
         @Override
-        public void onResponse(@NonNull Call<AccountResponse> call, @NonNull Response<AccountResponse> response) {
+        public void onResponse(@NonNull Call<AccountResponseOk> call, @NonNull Response<AccountResponseOk> response) {
             if (response.body() != null) {
-                AccountResponse accountResponse = response.body();
-                getViewState().authorizationOk(accountResponse.getUserData());
+                AccountResponseOk accountResponseOk = response.body();
+                getViewState().authorizationOk(accountResponseOk.getUserData());
             } else {
                 try {
                     Gson gson = new GsonBuilder().create();
-                    AccountErrorResponse accountErrorResponse =
-                            gson.fromJson(response.errorBody().string(), AccountErrorResponse.class);
-                    checkError(accountErrorResponse);
+                    AccountResponseError accountResponseError =
+                            gson.fromJson(response.errorBody().string(), AccountResponseError.class);
+                    checkError(accountResponseError);
                 } catch (IOException e) {
                 }
             }
         }
 
         @Override
-        public void onFailure(Call<AccountResponse> call, Throwable t) {
+        public void onFailure(Call<AccountResponseOk> call, Throwable t) {
             getViewState().authorizationFail(t.getMessage());
         }
     }

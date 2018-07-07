@@ -2,7 +2,7 @@ package com.example.blnsft.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AccountResponse {
+public class AccountResponseOk {
         private String status;
 
         @SerializedName("data")

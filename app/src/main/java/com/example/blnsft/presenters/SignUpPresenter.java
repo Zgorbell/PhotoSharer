@@ -1,10 +1,9 @@
 package com.example.blnsft.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.example.blnsft.models.AccountErrorResponse;
+import com.example.blnsft.models.AccountResponseError;
 import com.example.blnsft.models.AccountRequest;
-import com.example.blnsft.models.AccountResponse;
+import com.example.blnsft.models.AccountResponseOk;
 import com.example.blnsft.retrofit.SignUpApi;
 import com.example.blnsft.views.SignUpView;
 
@@ -17,12 +16,12 @@ public class SignUpPresenter extends SignInPresenter {
     @Override
     public void checkSign(String login, String password) {
         SignUpApi api = buildRetrofit().create(SignUpApi.class);
-        Call<AccountResponse> call = api.signUp(new AccountRequest(login, password));
+        Call<AccountResponseOk> call = api.signUp(new AccountRequest(login, password));
         call.enqueue(new AccountResponseCallback());
     }
 
     @Override
-    protected void checkError(AccountErrorResponse response) {
+    protected void checkError(AccountResponseError response) {
         super.checkError(response);
         if(response.getError().equals(LOGIN_ALREADY_USE)){
             ((SignUpView)getViewState()).authorizationAlreadyExistLogin();
