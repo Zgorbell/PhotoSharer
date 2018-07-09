@@ -5,18 +5,14 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.blnsft.models.PhotoRequest;
 import com.example.blnsft.models.PhotoResponseError;
 import com.example.blnsft.models.PhotoResponseOk;
 import com.example.blnsft.retrofit.DownloadPhotos;
-import com.example.blnsft.retrofit.UploadPhoto;
 import com.example.blnsft.views.DownloadPhotosView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -61,8 +57,7 @@ public class DownLoadPhotoPresenter extends MvpPresenter<DownloadPhotosView> {
             if (response.body() != null) {
                 PhotoResponseOk photoResponseOk = response.body();
                 Log.e("DownloadPhotoPresenter", "Downloading photos return ok");
-                getViewState().resetPhotos(Arrays.asList(photoResponseOk.getPhotos()));
-                Log.e("PhotoResponse", photoResponseOk.toString());
+                getViewState().addPhotos(Arrays.asList(photoResponseOk.getPhotos()));
             } else {
                 try {
                     Gson gson = new GsonBuilder().create();

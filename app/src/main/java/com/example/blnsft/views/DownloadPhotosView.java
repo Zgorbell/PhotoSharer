@@ -5,5 +5,5 @@ import com.example.blnsft.models.Photo;
 import java.util.List;
 
 public interface DownloadPhotosView extends MvpView{
-    void resetPhotos(List<Photo> photoList);
+    void addPhotos(List<Photo> photoList);
 }

@@ -86,16 +86,20 @@ public class MainActivity extends MvpAppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         userNameHeader = navigationView.getHeaderView(0).findViewById(R.id.username);
+        loadUserInfo();
+        setFragment(R.id.nav_photos);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        sessionHelper = new UserSessionHelper(
-                PreferenceManager.getDefaultSharedPreferences(this));
-        if (sessionHelper.checkSession()) userData = sessionHelper.getSession();
-        else startLoginActivity();
-        userNameHeader.setText(userData.getLogin());
+    public void setFragment(int itemId){
+        switch (itemId) {
+            case R.id.nav_photos:
+                changeFragment(PhotosFragment.newInstance(userData.getToken()), PHOTOS_FRAGMENT);
+                break;
+            case R.id.nav_map:
+                changeFragment(MapFragment.newInstance(), MAP_FRAGMENT);
+                break;
+        }
+        navigationView.setCheckedItem(itemId);
     }
 
     @Override
@@ -129,14 +133,7 @@ public class MainActivity extends MvpAppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_photos:
-                changeFragment(PhotosFragment.newInstance(userData.getToken()), PHOTOS_FRAGMENT);
-                break;
-            case R.id.nav_map:
-                changeFragment(MapFragment.newInstance(), MAP_FRAGMENT);
-                break;
-        }
+        setFragment(item.getItemId());
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -146,6 +143,14 @@ public class MainActivity extends MvpAppCompatActivity
         if (exist == null) exist = fragment;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container_fragment_main, exist).commit();
+    }
+
+    public void loadUserInfo(){
+        sessionHelper = new UserSessionHelper(
+                PreferenceManager.getDefaultSharedPreferences(this));
+        if (sessionHelper.checkSession()) userData = sessionHelper.getSession();
+        else startLoginActivity();
+        userNameHeader.setText(userData.getLogin());
     }
 
     public void startLoginActivity() {
@@ -162,14 +167,15 @@ public class MainActivity extends MvpAppCompatActivity
                     sessionHelper.saveSession(userData);
                     break;
                 case REQUEST_CODE_IMAGE_CAPTURE:
+                    Log.e("ResultActivity", "Camera activity return ok");
                     PhotoRequest photoRequest = createPhotoRequest();
-                    if(photoRequest != null)
-                    uploadPhotoPresenter.uploadPhoto(photoRequest, userData.getToken());
+                    if (photoRequest != null)
+                        uploadPhotoPresenter.uploadPhoto(photoRequest, userData.getToken());
                     break;
             }
-        } else Log.e("ResultActivity", "Activity is canceled");
-        boolean b = mTempPhotoFile.delete();
-        Log.e("ResultActivity", "Temp photo is deleted " + String.valueOf(b));
+        } else Log.e("onResultActivity", "Activity is canceled");
+        Log.e("onResultActivity", "Temp photo is deleted " +
+                                            String.valueOf(deleteTemporaryFile(mTempPhotoFile)));
     }
 
     private View.OnClickListener fabClickListener() {
@@ -199,7 +205,7 @@ public class MainActivity extends MvpAppCompatActivity
             Uri photoURI = FileProvider.getUriForFile(this,
                     "com.example.blnsft.fileprovider",
                     photoFile);
-            Log.e("DispatchTakePicture", "Temp photo path " + photoURI.toString());
+            Log.e("Main Activity", "Temp photo path " + photoURI.toString());
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
             startActivityForResult(takePictureIntent, REQUEST_CODE_IMAGE_CAPTURE);
         }
@@ -209,10 +215,22 @@ public class MainActivity extends MvpAppCompatActivity
 
     private File createTemporaryFile() throws IOException {
         String imageFileName = "JPEG_TEMP_";
+        Log.e("Main Activity", "Creation temporary file");
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         mTempPhotoFile = File.createTempFile(imageFileName, ".jpg", storageDir
         );
         return mTempPhotoFile;
+    }
+
+    private boolean deleteTemporaryFile(File file) {
+        return file != null && file.delete();
+    }
+    private byte[] encodeFileToBase64Binary(File file, int width, int height) {
+        Bitmap bm = resizeBitmap(decodeFile(file), width, height);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        Log.e("Base64", "Size" + String.valueOf(baos.size()));
+        return baos.toByteArray();
     }
 
     private Location getCurrentLocation() {
@@ -232,14 +250,6 @@ public class MainActivity extends MvpAppCompatActivity
         return bestLocation;
     }
 
-    private byte[] encodeFileToBase64Binary(File file, int width, int height) {
-        Bitmap bm = resizeBitmap(decodeFile(file), width, height);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        Log.e("Base64", "Size" + String.valueOf(baos.size()));
-        return baos.toByteArray();
-    }
-
     private void notifyAboutLocation(@NonNull Location location) {
         Snackbar.make(fab, "Location accuracy :" + location.getAccuracy(), Snackbar.LENGTH_LONG)
                 .show();
@@ -254,9 +264,8 @@ public class MainActivity extends MvpAppCompatActivity
     }
 
     private PhotoRequest createPhotoRequest() {
-        Log.e("ResultActivity", "Camera activity return ok");
         Location location = getCurrentLocation();
-        if(location != null) {
+        if (location != null) {
             String base64 = Base64.encodeToString(
                     encodeFileToBase64Binary(mTempPhotoFile, 120, 120),
                     Base64.DEFAULT);

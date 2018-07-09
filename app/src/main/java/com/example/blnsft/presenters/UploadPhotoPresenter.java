@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.blnsft.callbacks.PhotoResponseCallback;
 import com.example.blnsft.models.AccountResponseError;
 import com.example.blnsft.models.AccountResponseOk;
 import com.example.blnsft.models.PhotoRequest;
@@ -16,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -49,5 +49,37 @@ public class UploadPhotoPresenter extends MvpPresenter<UploadPhotoView> {
                 .connectTimeout(2500, TimeUnit.MILLISECONDS)
                 .readTimeout(2500, TimeUnit.MILLISECONDS)
                 .build();
+    }
+
+    public class PhotoResponseCallback implements Callback<PhotoResponseOk> {
+
+        @Override
+        public void onResponse(@NonNull Call<PhotoResponseOk> call,
+                               @NonNull Response<PhotoResponseOk> response) {
+            Log.e("UploadPhotoPresenter", "Response upload photo");
+            if (response.body() != null) {
+                PhotoResponseOk photoResponseOk = response.body();
+                Log.e("UploadPhotoPresenter", "Response upload photo is ok");
+                Log.e("PhotoResponse", photoResponseOk.toString());
+            } else {
+                try {
+                    Gson gson = new GsonBuilder().create();
+                    Log.e("Photo response error", response.errorBody().string());
+                    PhotoResponseError accountResponseError =
+                            gson.fromJson(response.errorBody().string(), PhotoResponseError.class);
+                }
+                catch (IOException e) {
+
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call<PhotoResponseOk> call, @NonNull Throwable t) {
+            Log.e("UploadPhotoPresenter", "Response failure");
+            Log.e("UploadPhotoPresenter", t.getMessage());
+            Log.e("UploadPhotoPresenter", t.getLocalizedMessage());
+            Log.e("UploadPhotoPresenter", Arrays.toString(t.getStackTrace()));
+        }
     }
 }
