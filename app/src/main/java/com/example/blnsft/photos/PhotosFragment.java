@@ -1,6 +1,11 @@
 package com.example.blnsft.photos;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,12 +16,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.arellomobile.mvp.MvpAppCompatDialogFragment;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.blnsft.R;
 import com.example.blnsft.models.Photo;
+import com.example.blnsft.presenters.DeletePhotoPresenter;
 import com.example.blnsft.presenters.DownLoadPhotoPresenter;
+import com.example.blnsft.retrofit.DeletePhoto;
 import com.example.blnsft.retrofit.DownloadPhotos;
+import com.example.blnsft.views.DeletePhotoView;
 import com.example.blnsft.views.DownloadPhotosView;
 
 import java.util.List;
@@ -83,7 +92,12 @@ public class PhotosFragment extends MvpAppCompatFragment implements
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        Log.e("Photo context menu", "Pressed position " + String.valueOf(item.getGroupId()));
+        showDeleteDialog(token, String.valueOf(item.getGroupId()));
         return true;
+    }
+
+    public void showDeleteDialog(String token, String id){
+        DeletePhotoDialogFragment dialogFragment = DeletePhotoDialogFragment.newInstance(token, id);
+        dialogFragment.show(getFragmentManager(), DeletePhotoDialogFragment.DELETE_PHOTO_DIALOG_TAG);
     }
 }

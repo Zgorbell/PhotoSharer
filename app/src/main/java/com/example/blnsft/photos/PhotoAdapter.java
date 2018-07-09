@@ -49,6 +49,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         holder.id = photoList.get(position).getId();
         holder.lat = photoList.get(position).getLat();
         holder.lng = photoList.get(position).getLng();
+        holder.position = position;
     }
 
     @Override
@@ -73,6 +74,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         String id;
         String lat;
         String lng;
+        int position;
         PhotoViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -82,8 +84,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             Log.e("Photo context menu", "Photo context menu started");
+            Log.e("Photo context menu", "Pressed position " + position + " and id" + id);
             menu.setHeaderTitle("Select The Action");
-            menu.add(getAdapterPosition(), v.getId(), 0, "Delete");//groupId, itemId, order, title
+            menu.add(Integer.valueOf(id), v.getId(), 0, "Delete");
         }
     }
 }
