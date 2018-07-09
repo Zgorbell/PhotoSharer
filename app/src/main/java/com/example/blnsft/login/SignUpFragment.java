@@ -24,11 +24,12 @@ public class SignUpFragment extends BaseSignFragment implements SignUpView {
         fragment.setArguments(args);
         return fragment;
     }
+
     @InjectPresenter
     SignUpPresenter signUpPresenter;
-
     @BindView(R.id.passwordRepeat)
     EditText mRepeatPassword;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);

@@ -131,10 +131,10 @@ public class MainActivity extends MvpAppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_photos:
-                changeFragment(new PhotosFragment(), PHOTOS_FRAGMENT);
+                changeFragment(PhotosFragment.newInstance(userData.getToken()), PHOTOS_FRAGMENT);
                 break;
             case R.id.nav_map:
-                changeFragment(new MapFragment(), MAP_FRAGMENT);
+                changeFragment(MapFragment.newInstance(), MAP_FRAGMENT);
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -162,25 +162,14 @@ public class MainActivity extends MvpAppCompatActivity
                     sessionHelper.saveSession(userData);
                     break;
                 case REQUEST_CODE_IMAGE_CAPTURE:
-                    Log.e("ResultActivity", "Camera activity return ok");
-                    Location location = getCurrentLocation();
-                    if(location != null){
-                        String base64 = Base64.encodeToString(
-                                encodeFileToBase64Binary(mTempPhotoFile, 120, 120),
-                                Base64.DEFAULT);
-                        PhotoRequest photoRequest = new PhotoRequest(
-                                String.valueOf(System.currentTimeMillis() / 1000),
-                                base64,
-                                String.valueOf(location.getLatitude()),
-                                String.valueOf(location.getLongitude()));
-                        uploadPhotoPresenter.uploadPhoto(photoRequest, userData.getToken());
-                    }
+                    PhotoRequest photoRequest = createPhotoRequest();
+                    if(photoRequest != null)
+                    uploadPhotoPresenter.uploadPhoto(photoRequest, userData.getToken());
                     break;
-
             }
         } else Log.e("ResultActivity", "Activity is canceled");
         boolean b = mTempPhotoFile.delete();
-        Log.e("ResultActivity"," Temp photo is deleted " + String.valueOf(b));
+        Log.e("ResultActivity", "Temp photo is deleted " + String.valueOf(b));
     }
 
     private View.OnClickListener fabClickListener() {
@@ -210,13 +199,14 @@ public class MainActivity extends MvpAppCompatActivity
             Uri photoURI = FileProvider.getUriForFile(this,
                     "com.example.blnsft.fileprovider",
                     photoFile);
-            Log.e("DispatchTakePicture","Temp photo path" + photoURI.toString());
+            Log.e("DispatchTakePicture", "Temp photo path " + photoURI.toString());
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
             startActivityForResult(takePictureIntent, REQUEST_CODE_IMAGE_CAPTURE);
         }
     }
 
     File mTempPhotoFile;
+
     private File createTemporaryFile() throws IOException {
         String imageFileName = "JPEG_TEMP_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -229,16 +219,15 @@ public class MainActivity extends MvpAppCompatActivity
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = lm.getProviders(true);
         Location bestLocation = null;
-        Log.e("Location","Permissions grated" +  String.valueOf(MapFragment.checkLocationPermission(this)));
         if (MapFragment.checkLocationPermission(this))
-        for (String provider : providers) {
-            Log.e("Providers", provider);
-            Location l = lm.getLastKnownLocation(provider);
-            if (l == null) continue;
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                bestLocation = l;
+            for (String provider : providers) {
+                Log.e("Providers", provider);
+                Location l = lm.getLastKnownLocation(provider);
+                if (l == null) continue;
+                if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                    bestLocation = l;
+                }
             }
-        }
         notifyAboutLocation(bestLocation);
         return bestLocation;
     }
@@ -247,20 +236,36 @@ public class MainActivity extends MvpAppCompatActivity
         Bitmap bm = resizeBitmap(decodeFile(file), width, height);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        Log.e("Base64","Size" + String.valueOf(baos.size()));
+        Log.e("Base64", "Size" + String.valueOf(baos.size()));
         return baos.toByteArray();
     }
 
-    private void notifyAboutLocation(@NonNull Location location){
-        Snackbar.make(fab, "Location accuracy :" + location.getAccuracy(),Snackbar.LENGTH_LONG)
+    private void notifyAboutLocation(@NonNull Location location) {
+        Snackbar.make(fab, "Location accuracy :" + location.getAccuracy(), Snackbar.LENGTH_LONG)
                 .show();
     }
 
-    private Bitmap resizeBitmap(Bitmap bitmap, int width, int height){
+    private Bitmap resizeBitmap(Bitmap bitmap, int width, int height) {
         return Bitmap.createScaledBitmap(bitmap, width, height, false);
     }
 
-    private Bitmap decodeFile(File file){
+    private Bitmap decodeFile(File file) {
         return BitmapFactory.decodeFile(file.toString());
+    }
+
+    private PhotoRequest createPhotoRequest() {
+        Log.e("ResultActivity", "Camera activity return ok");
+        Location location = getCurrentLocation();
+        if(location != null) {
+            String base64 = Base64.encodeToString(
+                    encodeFileToBase64Binary(mTempPhotoFile, 120, 120),
+                    Base64.DEFAULT);
+            return new PhotoRequest(
+                    String.valueOf(System.currentTimeMillis() / 1000),
+                    base64,
+                    String.valueOf(location.getLatitude()),
+                    String.valueOf(location.getLongitude()));
+        }
+        return null;
     }
 }

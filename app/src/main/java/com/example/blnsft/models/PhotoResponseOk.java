@@ -2,11 +2,13 @@ package com.example.blnsft.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
+
 public class PhotoResponseOk
 {
     private String status;
     @SerializedName("data")
-    private Photo photo;
+    private Photo[] photos;
 
     public String getStatus ()
     {
@@ -18,17 +20,17 @@ public class PhotoResponseOk
         this.status = status;
     }
 
-    public Photo getPhoto() {
-        return photo;
+    public Photo[] getPhotos() {
+        return photos;
     }
 
-    public void setPhoto(Photo photo) {
-        this.photo = photo;
+    public void setPhotos(Photo[] photos) {
+        this.photos = photos;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [status = "+ status +", data = "+photo.toString()+"]";
+        return "ClassPojo [status = "+ status +", data = "+ Arrays.toString(photos) +"]";
     }
 }

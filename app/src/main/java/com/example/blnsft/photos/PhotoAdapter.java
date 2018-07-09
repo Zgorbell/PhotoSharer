@@ -1,15 +1,26 @@
 package com.example.blnsft.photos;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.blnsft.R;
+import com.example.blnsft.models.Photo;
+import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,8 +43,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     @Override
     public void onBindViewHolder(PhotoViewHolder holder, int position) {
+        Picasso.get().load(photoList.get(position).getUrl()).into(holder.photoView);
+        DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG);
         holder.date.setText(photoList.get(position).getDate());
-        holder.photo.setImageResource(photoList.get(position).getImageUrl());
+        holder.id = photoList.get(position).getId();
+        holder.lat = photoList.get(position).getLat();
+        holder.lng = photoList.get(position).getLng();
     }
 
     @Override
@@ -45,14 +60,30 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         photoList.addAll(photos);
     }
 
-    static class PhotoViewHolder extends RecyclerView.ViewHolder{
+    public void deleteAll(){
+        photoList.clear();
+    }
+
+    static class PhotoViewHolder extends RecyclerView.ViewHolder implements
+            View.OnCreateContextMenuListener{
         @BindView(R.id.viewItemPhoto)
-        ImageView photo;
+        ImageView photoView;
         @BindView(R.id.viewItemPhotoTime)
         TextView date;
-        public PhotoViewHolder(View itemView) {
+        String id;
+        String lat;
+        String lng;
+        PhotoViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            Log.e("Photo context menu", "Photo context menu started");
+            menu.setHeaderTitle("Select The Action");
+            menu.add(getAdapterPosition(), v.getId(), 0, "Delete");//groupId, itemId, order, title
         }
     }
 }

@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap googleMap;
     private Unbinder unbinder;
 
+    public static MapFragment newInstance() {
+        Bundle args = new Bundle();
+        MapFragment fragment = new MapFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -62,11 +69,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public static boolean checkLocationPermission(Context context) {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED &&
-                        ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                                PackageManager.PERMISSION_GRANTED;
+                checkPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) &&
+                        checkPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION);
 
+    }
+
+    private static boolean checkPermission(Context context, String permission){
+        if(ActivityCompat.checkSelfPermission(context, permission) !=
+                PackageManager.PERMISSION_GRANTED){
+            Log.e("Location",permission + "is granted"); return true;
+        } else return false;
     }
 
 

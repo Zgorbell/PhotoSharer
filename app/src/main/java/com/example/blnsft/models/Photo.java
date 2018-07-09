@@ -3,9 +3,9 @@ package com.example.blnsft.models;
 public class Photo {
     private String id;
     private String date;
-    private String url;
     private String lat;
     private String lng;
+    private String url;
 
     public String getId() {
         return id;
@@ -49,6 +49,6 @@ public class Photo {
 
     @Override
     public String toString() {
-        return "ClassPojo [id = " + id + ", date = " + date + ", url = " + url + ", lat = " + lat + ", lng = " + lng + "]" ;
+        return "ClassPojo [id = " + id + ", date = " + date + ", lat = " + lat + ", lng = " + lng + ", url = " + url + "]" ;
     }
 }
