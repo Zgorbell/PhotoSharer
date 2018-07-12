@@ -4,18 +4,15 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.blnsft.models.AccountResponseError;
-import com.example.blnsft.models.AccountResponseOk;
-import com.example.blnsft.models.PhotoRequest;
-import com.example.blnsft.models.PhotoResponseError;
-import com.example.blnsft.models.PhotoResponseOk;
+import com.example.blnsft.pojos.PhotoRequest;
+import com.example.blnsft.pojos.PhotoResponseError;
+import com.example.blnsft.pojos.PhotoResponseOk;
 import com.example.blnsft.retrofit.UploadPhoto;
 import com.example.blnsft.views.UploadPhotoView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -64,7 +61,7 @@ public class UploadPhotoPresenter extends MvpPresenter<UploadPhotoView> {
             } else {
                 try {
                     Gson gson = new GsonBuilder().create();
-                    Log.e("Photo response error", response.errorBody().string());
+                    Log.e("PhotoResponseModel response error", response.errorBody().string());
                     PhotoResponseError accountResponseError =
                             gson.fromJson(response.errorBody().string(), PhotoResponseError.class);
                 }
@@ -77,9 +74,6 @@ public class UploadPhotoPresenter extends MvpPresenter<UploadPhotoView> {
         @Override
         public void onFailure(@NonNull Call<PhotoResponseOk> call, @NonNull Throwable t) {
             Log.e("UploadPhotoPresenter", "Response failure");
-            Log.e("UploadPhotoPresenter", t.getMessage());
-            Log.e("UploadPhotoPresenter", t.getLocalizedMessage());
-            Log.e("UploadPhotoPresenter", Arrays.toString(t.getStackTrace()));
         }
     }
 }

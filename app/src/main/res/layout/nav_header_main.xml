@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout >
+
+    <data>
+        <variable
+            name="userData"
+            type="com.example.blnsft.pojos.UserData" />
+    </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -13,10 +20,13 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <TextView
-        android:id="@+id/username"
+        android:text="@{userData.login}"
+        android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="20sp" />
 
 </LinearLayout>
+
+</layout>

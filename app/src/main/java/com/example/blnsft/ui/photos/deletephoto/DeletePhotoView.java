@@ -1,4 +1,4 @@
-package com.example.blnsft.views;
+package com.example.blnsft.ui.photos.deletephoto;
 
 import com.arellomobile.mvp.MvpView;
 

@@ -7,7 +7,7 @@
         <item
             android:id="@+id/nav_photos"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/photos" />
+            android:title="@string/photoResponseModels" />
         <item
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_map_black_24dp"

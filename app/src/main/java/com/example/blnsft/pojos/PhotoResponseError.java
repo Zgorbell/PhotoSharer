@@ -1,4 +1,4 @@
-package com.example.blnsft.models;
+package com.example.blnsft.pojos;
 
 public abstract class PhotoResponseError {
     private String status;

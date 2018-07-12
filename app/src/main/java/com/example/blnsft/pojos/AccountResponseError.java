@@ -1,4 +1,4 @@
-package com.example.blnsft.models;
+package com.example.blnsft.pojos;
 
 import com.google.gson.annotations.SerializedName;
 

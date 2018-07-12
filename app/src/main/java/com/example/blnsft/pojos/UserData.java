@@ -1,9 +1,7 @@
-package com.example.blnsft.models;
+package com.example.blnsft.pojos;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.io.Serializable;
 
 public class UserData implements Parcelable
 {

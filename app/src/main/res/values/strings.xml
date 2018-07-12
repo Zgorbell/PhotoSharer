@@ -23,7 +23,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="map">Map</string>
-    <string name="photos">Photos</string>
+    <string name="photoResponseModels">Photos</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="exit_item_string">Exit</string>
     <string name="dialog_deletePhoto_message">Delete photo?</string>

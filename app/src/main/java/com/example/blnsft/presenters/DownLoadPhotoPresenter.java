@@ -5,8 +5,9 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.blnsft.models.PhotoResponseError;
-import com.example.blnsft.models.PhotoResponseOk;
+import com.example.blnsft.App;
+import com.example.blnsft.pojos.PhotoResponseError;
+import com.example.blnsft.pojos.PhotoResponseOk;
 import com.example.blnsft.retrofit.DownloadPhotos;
 import com.example.blnsft.views.DownloadPhotosView;
 import com.google.gson.Gson;
@@ -25,7 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @InjectViewState
 public class DownLoadPhotoPresenter extends MvpPresenter<DownloadPhotosView> {
-    private static final String BASEURL = "http://junior.balinasoft.com";
+
 
     public void downloadPhoto(String token, int page){
         Log.e("DownloadPhotoPresenter", "Starting downloading photos");
@@ -36,7 +37,7 @@ public class DownLoadPhotoPresenter extends MvpPresenter<DownloadPhotosView> {
 
     protected Retrofit buildRetrofit(){
         return new Retrofit.Builder()
-                .baseUrl(BASEURL)
+                .baseUrl(App.BASEURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(buildOkHttp())
                 .build();
@@ -57,7 +58,7 @@ public class DownLoadPhotoPresenter extends MvpPresenter<DownloadPhotosView> {
             if (response.body() != null) {
                 PhotoResponseOk photoResponseOk = response.body();
                 Log.e("DownloadPhotoPresenter", "Downloading photos return ok");
-                getViewState().addPhotos(Arrays.asList(photoResponseOk.getPhotos()));
+                getViewState().addPhotos(Arrays.asList(photoResponseOk.getPhotoResponseModels()));
             } else {
                 try {
                     Gson gson = new GsonBuilder().create();

@@ -1,8 +1,8 @@
-package com.example.blnsft.retrofit;
+package com.example.blnsft.ui.login.signin;
 
 
-import com.example.blnsft.models.AccountRequest;
-import com.example.blnsft.models.AccountResponseOk;
+import com.example.blnsft.pojos.AccountRequest;
+import com.example.blnsft.pojos.AccountResponseOk;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

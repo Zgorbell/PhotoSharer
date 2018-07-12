@@ -1,15 +1,12 @@
 package com.example.blnsft.retrofit;
 
-import com.example.blnsft.models.Photo;
-import com.example.blnsft.models.PhotoRequest;
-import com.example.blnsft.models.PhotoResponseOk;
+import com.example.blnsft.pojos.PhotoRequest;
+import com.example.blnsft.pojos.PhotoResponseOk;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 public interface UploadPhoto {
     @POST("/api/image")

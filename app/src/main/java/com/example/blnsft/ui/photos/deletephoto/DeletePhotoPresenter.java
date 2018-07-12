@@ -1,20 +1,16 @@
-package com.example.blnsft.presenters;
+package com.example.blnsft.ui.photos.deletephoto;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.blnsft.models.PhotoResponseError;
-import com.example.blnsft.models.PhotoResponseOk;
-import com.example.blnsft.retrofit.DeletePhoto;
-import com.example.blnsft.retrofit.DownloadPhotos;
-import com.example.blnsft.views.DeletePhotoView;
+import com.example.blnsft.pojos.PhotoResponseError;
+import com.example.blnsft.pojos.PhotoResponseOk;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -30,8 +26,8 @@ public class DeletePhotoPresenter extends MvpPresenter<DeletePhotoView>{
 
     public void deletePhoto(String token, String id){
         Log.e("DeletePhotoPresenter", "Starting deleting a photo");
-        DeletePhoto deletePhoto = buildRetrofit().create(DeletePhoto.class);
-        Call<PhotoResponseOk> call = deletePhoto.deletePhoto(token, id);
+        DeletePhotoApi deletePhotoApi = buildRetrofit().create(DeletePhotoApi.class);
+        Call<PhotoResponseOk> call = deletePhotoApi.deletePhoto(token, id);
         call.enqueue(new PhotoResponseCallback());
     }
 

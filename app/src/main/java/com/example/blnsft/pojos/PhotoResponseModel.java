@@ -1,6 +1,12 @@
-package com.example.blnsft.models;
+package com.example.blnsft.pojos;
 
-public class Photo {
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
+@Entity
+public class PhotoResponseModel {
+
+    @PrimaryKey
     private String id;
     private String date;
     private String lat;
@@ -45,6 +51,11 @@ public class Photo {
 
     public void setLat(String lat) {
         this.lat = lat;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
     @Override
