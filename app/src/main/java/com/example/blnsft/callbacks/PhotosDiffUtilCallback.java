@@ -1,18 +1,49 @@
 package com.example.blnsft.callbacks;
 
+import android.arch.paging.PagedList;
 import android.support.v7.util.DiffUtil;
-import com.example.blnsft.pojos.PhotoResponseModel;
+import android.util.Log;
 
-public class PhotosDiffUtilCallback extends DiffUtil.ItemCallback<PhotoResponseModel>{
+import com.example.blnsft.data.db.model.Photo;
 
-    @Override
-    public boolean areItemsTheSame(PhotoResponseModel oldPhotoResponseModel, PhotoResponseModel newPhotoResponseModel) {
-        return oldPhotoResponseModel.getId().equals(newPhotoResponseModel.getId());
+import java.util.List;
+
+class PhotosDiffUtilCallback extends DiffUtil.Callback{
+    private static final String TAG = PhotosDiffUtilItemCallback.class.getSimpleName();
+    private final List<Photo> oldList;
+    private final List<Photo> newList;
+
+    public PhotosDiffUtilCallback(PagedList<Photo> oldList, PagedList<Photo> newList) {
+        this.oldList = oldList;
+        this.newList = newList;
     }
 
     @Override
-    public boolean areContentsTheSame(PhotoResponseModel oldPhotoResponseModel, PhotoResponseModel newPhotoResponseModel) {
-        return oldPhotoResponseModel.getDate().equals(newPhotoResponseModel.getDate())
-                && oldPhotoResponseModel.getUrl().equals(newPhotoResponseModel.getUrl());
+    public int getOldListSize() {
+        return oldList.size();
+    }
+
+    @Override
+    public int getNewListSize() {
+        return newList.size();
+    }
+
+    @Override
+    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+        Photo oldItem = oldList.get(oldItemPosition);
+        Photo newItem = newList.get(newItemPosition);
+        Log.e(TAG,String.valueOf(oldItem.getId().equals(newItem.getId())));
+        return oldItem.getId().equals(newItem.getId());
+    }
+
+    @Override
+    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+        Photo oldItem = oldList.get(oldItemPosition);
+        Photo newItem = newList.get(newItemPosition);
+        Log.e(TAG,  String.valueOf( oldItem.getPath().equals(newItem.getPath())
+                && oldItem.getDate().equals(newItem.getDate())));
+        return oldItem.getPath().equals(newItem.getPath())
+                && oldItem.getDate().equals(newItem.getDate());
     }
 }
+

@@ -48,6 +48,10 @@
                 <action android:name="android.intent.action.MAIN"> </action>
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="a5c7b35b73f5b2d6653c6ce6d329d532ac6742b2"
+            />
     </application>
 
 </manifest>

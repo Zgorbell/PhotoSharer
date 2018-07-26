@@ -1,7 +1,7 @@
 package com.example.blnsft.ui.login.signin;
 
 import com.arellomobile.mvp.MvpView;
-import com.example.blnsft.pojos.UserData;
+import com.example.blnsft.data.network.models.UserData;
 
 public interface SignInView extends MvpView {
     void authorizationOk(UserData userData);
